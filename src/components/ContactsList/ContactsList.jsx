@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { nanoid } from 'nanoid'
 
 const ContactsList = ({events,deleteName}) => {
+
     return(
         <UlContacts>
         {events.map(event =>(

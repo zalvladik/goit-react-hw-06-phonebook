@@ -1,65 +1,63 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from 'react'
 import ContactForm from './ContactsForm/ContactForm'
 import Filter from './Filter/Filter'
 import ContactsList from './ContactsList/ContactsList'
 import {Container} from './AppStyled'
 import { nanoid } from 'nanoid'
-
-const friendsList = JSON.parse(localStorage.getItem('friendsList'))
+import { useDispatch, useSelector } from "react-redux";
+import { addContact, deleteContact } from './redux/contactsReducer'
+import { filterContacts } from './redux/filterListReducer'
 
 const NewApp = () => {
-  const [contacts,setContacts] = useState(() =>{
-    if(friendsList === null){
-      return []} 
-      return friendsList})
+  const dispatch = useDispatch()
+  const contactsList = useSelector(state=>state.contacts)
+  const filterList = useSelector(state=>state.filter)
+  
+  const [filterValue, setFilterValue] = useState('')
 
-  const [filter,setFilter] = useState('')
+  useEffect(() => {
+    dispatch(filterContacts({contacts:contactsList, filterValue:filterValue}))
+  },[ filterValue, contactsList ])
 
-  useEffect(()=>{
-    localStorage.setItem('friendsList', JSON.stringify(contacts))
-  },[contacts])
-
-  const nameChanger = (name,number) => {
-      if(contacts.find(option => option.name.toLowerCase() === `${name}`.toLowerCase())){
+  const addNewContact = (name,number) => {
+      if(contactsList.find(option => option.name.toLowerCase() === `${name}`.toLowerCase())){
         return alert(`${name} is already in contact`)
       }
   
-      if(contacts.find(option => option.number === `${number}`)){
+      if(contactsList.find(option => option.number === `${number}`)){
         return alert(`${number} is already in contact`)
       }
-
-      const prevState = contacts
-      const newState = [{id: `${nanoid()}`, name:`${name}`, number:`${number}`}]
-      return setContacts([...prevState,...newState])
+      
+      const newState = {id: `${nanoid()}`, name:`${name}`, number:`${number}`}
+      dispatch(addContact(newState))
   }
 
     const deleteName = (event) =>{
-      const newState = contacts.filter(option => option.id !== `${event.currentTarget.id}`)   
-      setContacts(newState)
+      console.log('deleteButtton')
+      const newState = contactsList.filter(option => option.id !== `${event.currentTarget.id}`)   
+      dispatch(deleteContact(newState))
     }
   
     const filterName = (event) =>{
-        return setFilter(`${event.currentTarget.value}`)
+      setFilterValue(event.currentTarget.value)
     }
-
-    const newState = contacts && contacts.filter(option => option.name.toLowerCase().includes(`${filter.toLowerCase()}`))
 
       return(
         <Container>
         <h1>PhoneBook</h1>
         <ContactForm
-        newName={nameChanger}
+        newName={addNewContact}
         />
         
         <h2>Contacts</h2>
         <Filter
         filterName={filterName}
-        filterValue={filter}
+        filterValue={filterValue}
         />
-        {contacts && 
+        {contactsList && 
         <ContactsList
         deleteName={deleteName}
-        events={newState}
+        events={filterList}
         /> }
         </Container>
     )

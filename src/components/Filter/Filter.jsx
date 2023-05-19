@@ -9,7 +9,7 @@ const Filter = ({filterName,filterValue}) => {
             <InputText
             onChange={filterName}
             name="filter"
-            value={filterValue}
+            valu={filterValue}
             />
             </>
         )
