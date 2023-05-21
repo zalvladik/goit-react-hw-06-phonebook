@@ -1,10 +1,15 @@
 import React,{useState} from 'react'
 import {Container,Form,Button,Text,InputText} from './ContactFormStyled';
-import PropTypes from 'prop-types'
+import { addContact } from '../redux/contactsReducer'
+import { nanoid } from 'nanoid'
+import { useDispatch, useSelector } from "react-redux";
 
-const NewPhoneBookContainer = ({newName}) =>{
+const NewPhoneBookContainer = () =>{
     const [name, setName] = useState('')
     const [number, setNumber] = useState('')
+
+    const contactsList = useSelector(state=>state.contacts)
+    const dispatch = useDispatch()
 
     const currentName = (event) =>{
         const {name,value} = event.currentTarget
@@ -19,15 +24,24 @@ const NewPhoneBookContainer = ({newName}) =>{
         }
     }
 
-    const addNewName = (event) =>{
+    const addNewContact = (event) => {
         event.preventDefault()
-        newName(name,number)
+        if(contactsList.find(option => option.name.toLowerCase() === `${name}`.toLowerCase())){
+          return alert(`${name} is already in contact`)
+        }
+    
+        if(contactsList.find(option => option.number === `${number}`)){
+          return alert(`${number} is already in contact`)
+        }
+        
+        const newState = {id: `${nanoid()}`, name:`${name}`, number:`${number}`}
+        dispatch(addContact(newState))
         event.currentTarget.reset()
     }
 
     return (
         <Container>
-        <Form onSubmit={addNewName}>
+        <Form onSubmit={addNewContact}>
         <Text>Name</Text>
         <InputText
         onChange={currentName}
@@ -51,60 +65,6 @@ const NewPhoneBookContainer = ({newName}) =>{
         
         </Container>
     )
-}
-
-class PhoneBookContainer extends React.Component { 
-
-    state= {
-        name: '',
-        number: ''
-    }
-    currentName = (event) =>{
-        const {name,value} = event.currentTarget
-        this.setState({[name]:[value]})
-    }
-    
-    addNewName = (event) =>{
-        const {name,number} = this.state
-        event.preventDefault()
-        this.props.newState(name,number)
-
-        const form = event.currentTarget
-        form.reset()
-    }
-
-    render(){
-    return (
-        <Container>
-        <Form onSubmit={this.addNewName}>
-        <Text>Name</Text>
-        <InputText
-        onChange={this.currentName}
-        type="text"
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        required
-        />
-        <Text>Number</Text>
-        <InputText
-        onChange={this.currentName}
-            type="tel"
-            name="number"
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-        />
-        <Button type='submit'>Add contact</Button>
-        </Form>
-        
-        </Container>
-    )
-    } 
-};
-
-PhoneBookContainer.propTypes = {
-    newName:PropTypes.func.isRequired,
 }
 
 export default NewPhoneBookContainer;

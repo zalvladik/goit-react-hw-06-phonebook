@@ -1,12 +1,23 @@
 import {UlContacts,LiContacts,LiButton} from './ContactsListStyled'
-import PropTypes from 'prop-types'
 import { nanoid } from 'nanoid'
+import { useSelector, useDispatch } from 'react-redux'
+import { deleteContact } from '../redux/contactsReducer'
 
-const ContactsList = ({events,deleteName}) => {
+const ContactsList = () => {
+    
+    const dispatch = useDispatch()
+    const contactsList = useSelector(state=>state.contacts)
+    const filterList = useSelector(state=>state.filter)
+
+    const deleteName = (event) =>{
+        console.log('deleteButtton')
+        const newState = contactsList.filter(option => option.id !== `${event.currentTarget.id}`)   
+        dispatch(deleteContact(newState))
+      }
 
     return(
         <UlContacts>
-        {events.map(event =>(
+        {filterList.map(event =>(
             <LiContacts key={nanoid()}>{event.name}: {event.number}
             <LiButton id={event.id} onClick={deleteName}>Delete</LiButton>
             </LiContacts>
@@ -16,16 +27,6 @@ const ContactsList = ({events,deleteName}) => {
     )
 }
 
-ContactsList.propTypes = {
-    deleteName:PropTypes.func.isRequired,
-    events:PropTypes.arrayOf(
-        PropTypes.exact({
-            id:PropTypes.string.isRequired,
-            name:PropTypes.string.isRequired,
-            number:PropTypes.string.isRequired,
-        })
-    ),
-}
 
 
 export default ContactsList
