@@ -12,7 +12,7 @@ const ContactsList = () => {
     const deleteName = (event) =>{
         console.log('deleteButtton')
         const newState = contactsList.filter(option => option.id !== `${event.currentTarget.id}`)   
-        dispatch(deleteContact(newState))
+        dispatch(deleteContact({newState: newState}))
       }
     
     const newState = contactsList && contactsList.filter(option => option.name.toLowerCase().includes(`${filterValue}`))

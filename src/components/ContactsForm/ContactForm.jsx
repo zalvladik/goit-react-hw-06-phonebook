@@ -34,8 +34,8 @@ const NewPhoneBookContainer = () =>{
           return alert(`${number} is already in contact`)
         }
         
-        const newState = {id: `${nanoid()}`, name:`${name}`, number:`${number}`}
-        dispatch(addContact(newState))
+        const newContact = {id: `${nanoid()}`, name:`${name}`, number:`${number}`}
+        dispatch(addContact({newContact:newContact}))
         event.currentTarget.reset()
     }
 

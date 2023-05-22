@@ -6,7 +6,7 @@ const Filter = () => {
 
     const dispatch = useDispatch()
     const filterValue = useSelector(state=>state.filter)
-  
+    
     const filterName = (event) =>{
       dispatch(filterContacts({ filterValue: event.currentTarget.value.toLowerCase()}))
     }

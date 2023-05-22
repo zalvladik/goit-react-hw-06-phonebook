@@ -5,10 +5,10 @@ const contactsSlice = createSlice({
     initialState: [],
     reducers:{
         addContact(state,action) {
-            state.push(action.payload)
+            state.push(action.payload.newContact)
         },
         deleteContact(state,action) {
-            return state = action.payload
+            return state = action.payload.newState
         },
     }
 })
