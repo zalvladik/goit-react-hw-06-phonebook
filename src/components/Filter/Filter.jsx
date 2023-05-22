@@ -1,21 +1,14 @@
 import {Text,InputText} from './FilterStyled'
-import { useDispatch, useSelector } from 'react-redux'
-import { useState, useEffect } from 'react'
+import { useDispatch,useSelector } from 'react-redux'
 import { filterContacts } from '../redux/filterListReducer'
 
 const Filter = () => {
 
     const dispatch = useDispatch()
-    const contactsList = useSelector(state=>state.contacts)
-  
-    const [filterValue, setFilterValue] = useState('')
-
-    useEffect(() => {
-        dispatch(filterContacts({contacts:contactsList, filterValue:filterValue}))
-    },[ filterValue, contactsList, dispatch])
+    const filterValue = useSelector(state=>state.filter)
   
     const filterName = (event) =>{
-      setFilterValue(event.currentTarget.value)
+      dispatch(filterContacts({ filterValue: event.currentTarget.value.toLowerCase()}))
     }
 
      return(
@@ -24,7 +17,7 @@ const Filter = () => {
             <InputText
             onChange={filterName}
             name="filter"
-            value={filterValue}
+            value={ filterValue }
             />
             </>
         )
